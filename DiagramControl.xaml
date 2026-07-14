@@ -1,0 +1,53 @@
+<UserControl x:Class="DiagramControl.Views.DiagramControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Background="#F5F5F5" Padding="10" Height="50">
+            <Button Content="Zoom In" Click="ZoomIn_Click" Width="80" Margin="5"/>
+            <Button Content="Zoom Out" Click="ZoomOut_Click" Width="80" Margin="5"/>
+            <Button Content="Fit to View" Click="FitToView_Click" Width="100" Margin="5"/>
+            <Button Content="Reset" Click="Reset_Click" Width="80" Margin="5"/>
+            <Separator Width="20"/>
+            <TextBlock Text="Zoom: " VerticalAlignment="Center" Margin="5"/>
+            <TextBlock x:Name="ZoomLevelTextBlock" Text="100%" VerticalAlignment="Center" Width="50" Margin="5"/>
+        </StackPanel>
+
+        <!-- Canvas with ScrollViewer -->
+        <ScrollViewer Grid.Row="1" x:Name="ScrollViewer" 
+                      HorizontalScrollBarVisibility="Auto" 
+                      VerticalScrollBarVisibility="Auto"
+                      Background="#FFFFFF"
+                      PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+            <Canvas x:Name="DiagramCanvas" 
+                    Background="#FFFFFF" 
+                    Width="2000" 
+                    Height="2000"
+                    MouseLeftButtonDown="Canvas_MouseLeftButtonDown"
+                    MouseLeftButtonUp="Canvas_MouseLeftButtonUp"
+                    MouseMove="Canvas_MouseMove">
+            </Canvas>
+        </ScrollViewer>
+
+        <!-- Status Bar -->
+        <StatusBar Grid.Row="2" Background="#F0F0F0" Height="30">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusTextBlock" Text="Ready"/>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock x:Name="MousePositionTextBlock" Text="Position: (0, 0)"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</UserControl>

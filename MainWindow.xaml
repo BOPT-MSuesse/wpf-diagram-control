@@ -1,0 +1,16 @@
+<Window x:Class="DiagramControl.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DiagramControl"
+        xmlns:views="clr-namespace:DiagramControl.Views"
+        mc:Ignorable="d"
+        Title="WPF Diagram Control - Zoom & Pan" 
+        Height="700" 
+        Width="1000"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <views:DiagramControl x:Name="DiagramControl"/>
+    </Grid>
+</Window>
