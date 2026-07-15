@@ -153,8 +153,9 @@ namespace DiagramControl.Views
             {
                 double left = Canvas.GetLeft(element);
                 double top = Canvas.GetTop(element);
-                double width = (element as FrameworkElement)?.Width ?? 0;
-                double height = (element as FrameworkElement)?.Height ?? 0;
+                FrameworkElement fe = element as FrameworkElement;
+                double width = fe != null ? fe.Width : 0;
+                double height = fe != null ? fe.Height : 0;
 
                 if (left < minX) minX = left;
                 if (top < minY) minY = top;
@@ -211,7 +212,7 @@ namespace DiagramControl.Views
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
             var position = e.GetPosition(DiagramCanvas);
-            MousePositionTextBlock.Text = $"Position: ({position.X:F0}, {position.Y:F0})";
+            MousePositionTextBlock.Text = string.Format("Position: ({0:F0}, {1:F0})", position.X, position.Y);
 
             if (_isPanning && e.LeftButton == MouseButtonState.Pressed)
             {
@@ -238,8 +239,8 @@ namespace DiagramControl.Views
 
         private void UpdateZoomLevel()
         {
-            ZoomLevelTextBlock.Text = $"{(_zoomLevel * 100):F0}%";
-            StatusTextBlock.Text = $"Zoom: {(_zoomLevel * 100):F0}%";
+            ZoomLevelTextBlock.Text = string.Format("{0:F0}%", (_zoomLevel * 100));
+            StatusTextBlock.Text = string.Format("Zoom: {0:F0}%", (_zoomLevel * 100));
         }
 
         // Public method to add custom shapes
