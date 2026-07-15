@@ -12,6 +12,13 @@ A reusable WPF control for displaying and interacting with diagrams, featuring s
 - **Sample Diagram**: Pre-loaded with example shapes and connections
 - **Extensible API**: Public methods for adding custom shapes
 
+## System Requirements
+
+- **Visual Studio**: 2022 (v17.0 or later)
+- **.NET Framework**: 4.5.1 or higher
+- **Windows**: 7 SP1 or later
+- **Platform**: x86, x64, or ARM64
+
 ## Usage
 
 ### Basic Usage in XAML
@@ -174,18 +181,25 @@ drawingContext.Close();
 ## Building & Running
 
 ### Prerequisites
-- .NET 6.0 SDK or later
-- Visual Studio 2022 (recommended) or VS Code
+
+- **Visual Studio 2022** (Community, Professional, or Enterprise)
+- **.NET Framework 4.5.1 Developer Pack** (if not already installed)
 
 ### Build
+
+Open the `.csproj` file in Visual Studio 2022 and build using:
+- **Build** → **Build Solution** (or press Ctrl+Shift+B)
+
+Or from command line:
 ```bash
-dotnet build
+msbuild DiagramControl.csproj /p:Configuration=Release
 ```
 
 ### Run
-```bash
-dotnet run
-```
+
+- Press **F5** in Visual Studio to run with debugging
+- Press **Ctrl+F5** to run without debugging
+- Or double-click the executable in `bin\Debug\` or `bin\Release\`
 
 ## Project Structure
 
@@ -197,9 +211,20 @@ wpf-diagram-control/
 ├── MainWindow.xaml.cs               # Window code-behind
 ├── App.xaml                         # Application resources
 ├── App.xaml.cs                      # Application setup
-├── DiagramControl.csproj            # Project configuration
+├── Properties/
+│   └── AssemblyInfo.cs              # Assembly metadata
+├── DiagramControl.csproj            # Project configuration (VS2022)
 └── README.md                        # This file
 ```
+
+## Visual Studio 2022 Compatibility
+
+- **ToolsVersion**: 17.0 (Visual Studio 2022)
+- **LangVersion**: latest (C# 11 language features available)
+- **Target Framework**: .NET Framework 4.5.1
+- **Platform Target**: AnyCPU (supports x86, x64, and ARM64)
+
+The project file is fully compatible with Visual Studio 2022 while maintaining .NET Framework 4.5.1 as the target runtime.
 
 ## License
 
