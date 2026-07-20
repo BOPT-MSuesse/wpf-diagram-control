@@ -18,7 +18,10 @@ namespace DiagramControl.Views
         private const double ZoomIncrement = 0.1;
         private const double MinZoom = 0.1;
         private const double MaxZoom = 5.0;
-        private const double XAxisScaleInterval = 100.0;
+        private const double XAxisMinValue = 670.0;
+        private const double XAxisMaxValue = 1500.0;
+        private const double XAxisScaleInterval = 10.0;
+        private const double XAxisPixelsPerUnit = 0.16; // (2000 pixels) / (1500 - 670) / 10 steps
         private const double YAxisScaleInterval = 0.1;
         private const double YAxisPixelsPerUnit = 1000.0; // 1000 pixels = 1.0 in value
         private const double TickMarkLength = 5.0;
@@ -71,32 +74,38 @@ namespace DiagramControl.Views
             };
             DiagramCanvas.Children.Add(yAxis);
 
-            // Draw X-axis tick marks and labels (0, 100, 200, 300, etc.)
-            for (double x = 0; x <= DiagramCanvas.Width; x += XAxisScaleInterval)
+            // Draw X-axis tick marks and labels (670, 680, 690, ..., 1500)
+            for (double xValue = XAxisMinValue; xValue <= XAxisMaxValue; xValue += XAxisScaleInterval)
             {
+                // Convert value to pixel position
+                double xPixel = (xValue - XAxisMinValue) * XAxisPixelsPerUnit;
+
                 // Tick mark
                 Line tick = new Line
                 {
-                    X1 = x,
+                    X1 = xPixel,
                     Y1 = -TickMarkLength,
-                    X2 = x,
+                    X2 = xPixel,
                     Y2 = TickMarkLength,
                     Stroke = Brushes.Black,
                     StrokeThickness = 1
                 };
                 DiagramCanvas.Children.Add(tick);
 
-                // Label
-                TextBlock label = new TextBlock
+                // Label (only show every other value to avoid crowding)
+                if (Math.Abs((xValue - XAxisMinValue) % 50.0) < 0.1)
                 {
-                    Text = string.Format("{0:F0}", x),
-                    Foreground = Brushes.Black,
-                    FontSize = 10,
-                    TextAlignment = TextAlignment.Center
-                };
-                Canvas.SetLeft(label, x - 15);
-                Canvas.SetTop(label, TickMarkLength + 5);
-                DiagramCanvas.Children.Add(label);
+                    TextBlock label = new TextBlock
+                    {
+                        Text = string.Format("{0:F0}", xValue),
+                        Foreground = Brushes.Black,
+                        FontSize = 10,
+                        TextAlignment = TextAlignment.Center
+                    };
+                    Canvas.SetLeft(label, xPixel - 20);
+                    Canvas.SetTop(label, TickMarkLength + 5);
+                    DiagramCanvas.Children.Add(label);
+                }
             }
 
             // Draw Y-axis tick marks and labels (0, 0.1, 0.2, ..., 1.0)
@@ -145,14 +154,17 @@ namespace DiagramControl.Views
 
         private void DrawGridlines()
         {
-            // Draw vertical gridlines (X-axis: every 100 units)
-            for (double x = 0; x <= DiagramCanvas.Width; x += XAxisScaleInterval)
+            // Draw vertical gridlines (X-axis: 670 to 1500 in steps of 10)
+            for (double xValue = XAxisMinValue; xValue <= XAxisMaxValue; xValue += XAxisScaleInterval)
             {
+                // Convert value to pixel position
+                double xPixel = (xValue - XAxisMinValue) * XAxisPixelsPerUnit;
+
                 Line gridline = new Line
                 {
-                    X1 = x,
+                    X1 = xPixel,
                     Y1 = 0,
-                    X2 = x,
+                    X2 = xPixel,
                     Y2 = DiagramCanvas.Height,
                     Stroke = new SolidColorBrush(Color.FromArgb(30, 200, 200, 200)),
                     StrokeThickness = 0.5,
