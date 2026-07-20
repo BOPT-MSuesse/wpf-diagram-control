@@ -18,11 +18,14 @@ namespace DiagramControl.Views
         private const double ZoomIncrement = 0.1;
         private const double MinZoom = 0.1;
         private const double MaxZoom = 5.0;
+        private const double AxisScaleInterval = 100.0;
+        private const double TickMarkLength = 5.0;
 
         public DiagramControl()
         {
             InitializeComponent();
             InitializeTransforms();
+            DrawAxes();
             InitializeSampleDiagram();
         }
 
@@ -35,6 +38,139 @@ namespace DiagramControl.Views
             _transformGroup.Children.Add(_translateTransform);
             DiagramCanvas.RenderTransform = _transformGroup;
             DiagramCanvas.RenderTransformOrigin = new Point(0, 0);
+        }
+
+        private void DrawAxes()
+        {
+            // Draw gridlines
+            DrawGridlines();
+
+            // Draw X-axis (horizontal line at y=0)
+            Line xAxis = new Line
+            {
+                X1 = 0,
+                Y1 = 0,
+                X2 = DiagramCanvas.Width,
+                Y2 = 0,
+                Stroke = Brushes.Black,
+                StrokeThickness = 2
+            };
+            DiagramCanvas.Children.Add(xAxis);
+
+            // Draw Y-axis (vertical line at x=0)
+            Line yAxis = new Line
+            {
+                X1 = 0,
+                Y1 = 0,
+                X2 = 0,
+                Y2 = DiagramCanvas.Height,
+                Stroke = Brushes.Black,
+                StrokeThickness = 2
+            };
+            DiagramCanvas.Children.Add(yAxis);
+
+            // Draw X-axis tick marks and labels
+            for (double x = 0; x <= DiagramCanvas.Width; x += AxisScaleInterval)
+            {
+                // Tick mark
+                Line tick = new Line
+                {
+                    X1 = x,
+                    Y1 = -TickMarkLength,
+                    X2 = x,
+                    Y2 = TickMarkLength,
+                    Stroke = Brushes.Black,
+                    StrokeThickness = 1
+                };
+                DiagramCanvas.Children.Add(tick);
+
+                // Label
+                TextBlock label = new TextBlock
+                {
+                    Text = string.Format("{0:F0}", x),
+                    Foreground = Brushes.Black,
+                    FontSize = 10,
+                    TextAlignment = TextAlignment.Center
+                };
+                Canvas.SetLeft(label, x - 15);
+                Canvas.SetTop(label, TickMarkLength + 5);
+                DiagramCanvas.Children.Add(label);
+            }
+
+            // Draw Y-axis tick marks and labels
+            for (double y = 0; y <= DiagramCanvas.Height; y += AxisScaleInterval)
+            {
+                // Tick mark
+                Line tick = new Line
+                {
+                    X1 = -TickMarkLength,
+                    Y1 = y,
+                    X2 = TickMarkLength,
+                    Y2 = y,
+                    Stroke = Brushes.Black,
+                    StrokeThickness = 1
+                };
+                DiagramCanvas.Children.Add(tick);
+
+                // Label
+                TextBlock label = new TextBlock
+                {
+                    Text = string.Format("{0:F0}", y),
+                    Foreground = Brushes.Black,
+                    FontSize = 10,
+                    TextAlignment = TextAlignment.Right
+                };
+                Canvas.SetLeft(label, -40);
+                Canvas.SetTop(label, y - 7);
+                DiagramCanvas.Children.Add(label);
+            }
+
+            // Add origin label
+            TextBlock originLabel = new TextBlock
+            {
+                Text = "0",
+                Foreground = Brushes.Black,
+                FontSize = 10,
+                FontWeight = FontWeights.Bold
+            };
+            Canvas.SetLeft(originLabel, -15);
+            Canvas.SetTop(originLabel, -15);
+            DiagramCanvas.Children.Add(originLabel);
+        }
+
+        private void DrawGridlines()
+        {
+            // Draw vertical gridlines
+            for (double x = 0; x <= DiagramCanvas.Width; x += AxisScaleInterval)
+            {
+                Line gridline = new Line
+                {
+                    X1 = x,
+                    Y1 = 0,
+                    X2 = x,
+                    Y2 = DiagramCanvas.Height,
+                    Stroke = new SolidColorBrush(Color.FromArgb(30, 200, 200, 200)),
+                    StrokeThickness = 0.5,
+                    StrokeDashArray = new DoubleCollection { 2, 2 }
+                };
+                DiagramCanvas.Children.Add(gridline);
+            }
+
+            // Draw horizontal gridlines
+            for (double y = 0; y <= DiagramCanvas.Height; y += AxisScaleInterval)
+            {
+                Line gridline = new Line
+                {
+                    X1 = 0,
+                    Y1 = y,
+                    X2 = DiagramCanvas.Width,
+                    Y2 = y,
+                    Stroke = new SolidColorBrush(Color.FromArgb(30, 200, 200, 200)),
+                    StrokeThickness = 0.5,
+                    StrokeDashArray = new DoubleCollection { 2, 2 }
+                };
+                DiagramCanvas.Children.Add(gridline);
+            }
         }
 
         private void InitializeSampleDiagram()
