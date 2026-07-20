@@ -18,7 +18,9 @@ namespace DiagramControl.Views
         private const double ZoomIncrement = 0.1;
         private const double MinZoom = 0.1;
         private const double MaxZoom = 5.0;
-        private const double AxisScaleInterval = 100.0;
+        private const double XAxisScaleInterval = 100.0;
+        private const double YAxisScaleInterval = 0.1;
+        private const double YAxisPixelsPerUnit = 1000.0; // 1000 pixels = 1.0 in value
         private const double TickMarkLength = 5.0;
 
         public DiagramControl()
@@ -69,8 +71,8 @@ namespace DiagramControl.Views
             };
             DiagramCanvas.Children.Add(yAxis);
 
-            // Draw X-axis tick marks and labels
-            for (double x = 0; x <= DiagramCanvas.Width; x += AxisScaleInterval)
+            // Draw X-axis tick marks and labels (0, 100, 200, 300, etc.)
+            for (double x = 0; x <= DiagramCanvas.Width; x += XAxisScaleInterval)
             {
                 // Tick mark
                 Line tick = new Line
@@ -97,16 +99,19 @@ namespace DiagramControl.Views
                 DiagramCanvas.Children.Add(label);
             }
 
-            // Draw Y-axis tick marks and labels
-            for (double y = 0; y <= DiagramCanvas.Height; y += AxisScaleInterval)
+            // Draw Y-axis tick marks and labels (0, 0.1, 0.2, ..., 1.0)
+            for (double yValue = 0; yValue <= 1.0; yValue += YAxisScaleInterval)
             {
+                // Convert value to pixel position (inverted because canvas Y increases downward)
+                double yPixel = DiagramCanvas.Height - (yValue * YAxisPixelsPerUnit);
+
                 // Tick mark
                 Line tick = new Line
                 {
                     X1 = -TickMarkLength,
-                    Y1 = y,
+                    Y1 = yPixel,
                     X2 = TickMarkLength,
-                    Y2 = y,
+                    Y2 = yPixel,
                     Stroke = Brushes.Black,
                     StrokeThickness = 1
                 };
@@ -115,13 +120,13 @@ namespace DiagramControl.Views
                 // Label
                 TextBlock label = new TextBlock
                 {
-                    Text = string.Format("{0:F0}", y),
+                    Text = string.Format("{0:F1}", yValue),
                     Foreground = Brushes.Black,
                     FontSize = 10,
                     TextAlignment = TextAlignment.Right
                 };
                 Canvas.SetLeft(label, -40);
-                Canvas.SetTop(label, y - 7);
+                Canvas.SetTop(label, yPixel - 7);
                 DiagramCanvas.Children.Add(label);
             }
 
@@ -140,8 +145,8 @@ namespace DiagramControl.Views
 
         private void DrawGridlines()
         {
-            // Draw vertical gridlines
-            for (double x = 0; x <= DiagramCanvas.Width; x += AxisScaleInterval)
+            // Draw vertical gridlines (X-axis: every 100 units)
+            for (double x = 0; x <= DiagramCanvas.Width; x += XAxisScaleInterval)
             {
                 Line gridline = new Line
                 {
@@ -156,15 +161,18 @@ namespace DiagramControl.Views
                 DiagramCanvas.Children.Add(gridline);
             }
 
-            // Draw horizontal gridlines
-            for (double y = 0; y <= DiagramCanvas.Height; y += AxisScaleInterval)
+            // Draw horizontal gridlines (Y-axis: every 0.1 in value)
+            for (double yValue = 0; yValue <= 1.0; yValue += YAxisScaleInterval)
             {
+                // Convert value to pixel position (inverted because canvas Y increases downward)
+                double yPixel = DiagramCanvas.Height - (yValue * YAxisPixelsPerUnit);
+
                 Line gridline = new Line
                 {
                     X1 = 0,
-                    Y1 = y,
+                    Y1 = yPixel,
                     X2 = DiagramCanvas.Width,
-                    Y2 = y,
+                    Y2 = yPixel,
                     Stroke = new SolidColorBrush(Color.FromArgb(30, 200, 200, 200)),
                     StrokeThickness = 0.5,
                     StrokeDashArray = new DoubleCollection { 2, 2 }
